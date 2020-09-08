@@ -4,7 +4,7 @@
 using namespace std;
 
 void test(){
-cout << "The test worked perfectly" << endl;
+cout << "The test worked perfectlyszn" << endl;
 }
 
 int main(){
