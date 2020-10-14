@@ -5,14 +5,13 @@ class BSTNode
 {
 private:
     int value;
-    BSTNode *left = nullptr;
-    BSTNode *right = nullptr;
+    BSTNode *left;
+    BSTNode *right;
     int level;
-    int col = 0;
+    int col;
 
 public:
-    BSTNode(int val);
-    ~BSTNode();
+    BSTNode(int value);
     bool exists()
     {
         if (value)
@@ -28,7 +27,7 @@ public:
     {
         return level;
     }
-    int setLevel(int value)
+    void setLevel(int value)
     {
         level = value;
     }
@@ -36,7 +35,7 @@ public:
     {
         return col;
     }
-    int setCol(int value)
+    void setCol(int value)
     {
         col = value;
     }
@@ -64,13 +63,15 @@ public:
     }
 };
 
-BSTNode::BSTNode(int val)
+BSTNode::BSTNode(int value)
 {
-    value = val;
+    this->value = value;
+    left = nullptr;
+    right = nullptr;
+    level = 0;
+    col = 0;
 }
-BSTNode::~BSTNode()
-{
-}
+
 void BSTNode::setLeft(int val)
 {
     left = new BSTNode(val);
@@ -94,6 +95,13 @@ public:
         return height;
     }
     void prettyPrint();
+
+private:
+    BSTNode *head = nullptr;
+    int height;
+    int level;
+    int totalNodes;
+    std::vector<BSTNode *> allnodes;
     void printLine(int width);
     void printLevel(int level);
     std::vector<BSTNode *> getVectorFromLevel(int level);
@@ -105,22 +113,16 @@ public:
     {
         return totalNodes;
     }
-
-private:
-    BSTNode *head = nullptr;
-    int height = 0;
-    int level = 0;
-    int headVal;
-    int totalNodes = 0;
-    std::vector<BSTNode *> allnodes;
 };
 
 BST::BST()
 {
+    height = 0;
+    level = 0;
+    totalNodes = 0;
 }
 BST::~BST()
 {
-
     deleteTree(head);
 }
 void BST::deleteTree(BSTNode *node)
@@ -280,15 +282,15 @@ void BST::printLevel(int level)
 {
     std::vector<BSTNode *> valsFromLevel = getVectorFromLevel(level);
     bool isInLevel = false;
-    for (int i = 1; i < getTotalNodes() + 1; i++)
+    for (int i = 1; i <= getTotalNodes(); i++)
     {
         for (int j = 0; j < valsFromLevel.size(); j++)
         {
             if (i == valsFromLevel.at(j)->getCol())
             {
-                if (i == getTotalNodes())
+                if (i == getTotalNodes()) //last element
                 {
-                    if (valsFromLevel.at(j)->getVal() < 0)
+                    if (valsFromLevel.at(j)->getVal() < 0 || valsFromLevel.at(j)->getVal() >= 10)
                     {
                         std::cout << "|  " << valsFromLevel.at(j)->getVal() << '|';
                         isInLevel = true;
@@ -303,7 +305,7 @@ void BST::printLevel(int level)
                 }
                 else
                 {
-                    if (valsFromLevel.at(j)->getVal() < 0)
+                    if (valsFromLevel.at(j)->getVal() < 0 || valsFromLevel.at(j)->getVal() >= 10)
                     {
                         std::cout << "|  " << valsFromLevel.at(j)->getVal();
                         isInLevel = true;
@@ -316,7 +318,7 @@ void BST::printLevel(int level)
                     }
                 }
             }
-            }
+        }
             if (!isInLevel)
             {
                 if (i == getTotalNodes())
@@ -356,22 +358,6 @@ void BST::printLevel(int level)
     }
     void BST::prettyPrint()
     {
-        /*
-Enter the numbers to be stored: 0 4 -4 6 -6 -3 3 -7 9 q
-The numbers in sorted order: -7 -6 -4 -3 0 3 4 6 9 
-----------------------------------------------
-|    |    |    |    |   0|    |    |    |    |
-----------------------------------------------
-|    |    |  -4|    |    |    |   4|    |    |
-----------------------------------------------
-|    |  -6|    |  -3|    |   3|    |   6|    |
-----------------------------------------------
-|  -7|    |    |    |    |    |    |    |   9|
-----------------------------------------------
-
-height = 4;
-width = 9;
-*/
         int width = getTotalNodes();
         int height = getHeight();
 
@@ -388,7 +374,7 @@ width = 9;
             }
         }
 
-        for (int i = 1; i < height + 1; i++)
+        for (int i = 1; i <= height; i++)
         {
             printLine(width);
             printLevel(i);
@@ -419,6 +405,7 @@ width = 9;
                 bst.insertKey(num);
             }
         }
+
         std::cout << "The numbers in sorted order: ";
         std::vector<int> test = bst.inOrder();
         if (!test.empty())
@@ -428,8 +415,8 @@ width = 9;
                 std::cout << test.at(i) << ' ';
             }
         }
-
         std::cout << std::endl;
+
         bst.prettyPrint();
 
         return 0;
